@@ -1,0 +1,1420 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>THE MASTER — Mobilidade</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#15140f;
+    --panel:#1d1c15;
+    --panel-2:#26241a;
+    --line:#39371f;
+    --paper:#f2ede2;
+    --paper-dim:#c9c3ac;
+    --ember:#e8862e;
+    --ember-dim:#8a5322;
+    --ok:#7fa66a;
+    --warn:#d1553f;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--ink);
+    color:var(--paper);
+    font-family:'Archivo',system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+    padding-bottom:90px;
+  }
+  h1,h2,h3,.display{
+    font-family:'Archivo Black','Archivo',sans-serif;
+    letter-spacing:0.01em;
+  }
+
+  /* ---------- HEADER ---------- */
+  header.top{
+    position:sticky; top:0; z-index:20;
+    background:linear-gradient(180deg, var(--ink) 70%, rgba(21,20,15,0));
+    padding:18px 18px 10px;
+  }
+  .brand-row{
+    display:flex; align-items:baseline; justify-content:space-between;
+  }
+  .brand{
+    font-size:26px; line-height:1; color:var(--paper);
+  }
+  .brand span{color:var(--ember);}
+  .subtitle{
+    font-size:12.5px; color:var(--paper-dim); margin-top:4px;
+    text-transform:uppercase; letter-spacing:0.14em;
+  }
+  .progress-pill{
+    background:var(--panel); border:1px solid var(--line); border-radius:999px;
+    padding:6px 12px; font-size:12px; color:var(--paper-dim); white-space:nowrap;
+  }
+  .progress-pill b{color:var(--ember); font-weight:700;}
+
+  /* ---------- INTRO CARD ---------- */
+  .intro{
+    margin:14px 18px 6px; padding:16px;
+    background:var(--panel); border:1px solid var(--line); border-radius:var(--radius);
+  }
+  .intro h2{font-size:15px; margin:0 0 10px; color:var(--paper);}
+  .intro-grid{display:grid; grid-template-columns:1fr 1fr; gap:8px;}
+  .intro-item{
+    background:var(--panel-2); border-radius:10px; padding:10px 12px;
+    font-size:12px; color:var(--paper-dim); line-height:1.45;
+  }
+  .intro-item b{display:block; color:var(--paper); font-size:13px; margin-bottom:2px;}
+
+  /* ---------- TABS ---------- */
+  .tabs{
+    display:flex; gap:8px; overflow-x:auto; padding:14px 18px 4px;
+    scrollbar-width:none;
+  }
+  .tabs::-webkit-scrollbar{display:none;}
+  .tab{
+    flex:0 0 auto;
+    padding:9px 16px; border-radius:999px; border:1px solid var(--line);
+    background:var(--panel); color:var(--paper-dim);
+    font-size:13px; font-weight:600; cursor:pointer; white-space:nowrap;
+    transition:background .15s, color .15s, border-color .15s;
+  }
+  .tab.active{
+    background:var(--ember); color:#1a1206; border-color:var(--ember);
+  }
+  .tab .count{opacity:.7; font-weight:400; margin-left:4px;}
+
+  /* ---------- LIST ---------- */
+  main{padding:6px 18px 10px;}
+  .cat-heading{
+    display:flex; align-items:center; justify-content:space-between;
+    margin:18px 2px 10px;
+  }
+  .cat-heading h3{font-size:19px; margin:0; color:var(--paper);}
+  .cat-heading .bar{
+    flex:1; height:1px; background:var(--line); margin-left:12px;
+  }
+
+  .card{
+    background:var(--panel); border:1px solid var(--line); border-radius:var(--radius);
+    margin-bottom:10px; overflow:hidden;
+  }
+  .card-head{
+    display:flex; align-items:center; gap:12px;
+    padding:13px 14px; cursor:pointer;
+  }
+  .check{
+    flex:0 0 auto; width:26px; height:26px; border-radius:50%;
+    border:2px solid var(--line); display:flex; align-items:center; justify-content:center;
+    color:transparent; font-size:14px; transition:all .15s;
+  }
+  .check.done{background:var(--ok); border-color:var(--ok); color:#12200c;}
+  .card-title-wrap{flex:1; min-width:0;}
+  .card-title{font-size:15px; font-weight:700; color:var(--paper);}
+  .card-title.done-text{color:var(--paper-dim); text-decoration:line-through; text-decoration-color:var(--ember-dim);}
+  .card-meta{display:flex; gap:6px; margin-top:5px; flex-wrap:wrap;}
+  .badge{
+    font-size:10.5px; text-transform:uppercase; letter-spacing:.06em;
+    padding:2px 8px; border-radius:999px; font-weight:700;
+  }
+  .badge.facil{background:rgba(127,166,106,.18); color:var(--ok);}
+  .badge.intermediario{background:rgba(232,134,46,.18); color:var(--ember);}
+  .badge.avancado{background:rgba(209,85,63,.18); color:var(--warn);}
+  .badge.tag{background:var(--panel-2); color:var(--paper-dim);}
+  .chevron{
+    flex:0 0 auto; color:var(--paper-dim); font-size:18px;
+    transition:transform .2s;
+  }
+  .card.open .chevron{transform:rotate(180deg);}
+
+  .card-body{
+    max-height:0; overflow:hidden; transition:max-height .25s ease;
+  }
+  .card-body-inner{padding:0 14px 16px 52px;}
+  .field{margin-bottom:10px;}
+  .field:last-child{margin-bottom:0;}
+  .field-label{
+    font-size:10.5px; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--ember); font-weight:700; margin-bottom:3px;
+  }
+  .field-value{font-size:13.5px; color:var(--paper-dim); line-height:1.55;}
+  .field-value ul{margin:0; padding-left:18px;}
+  .field-value li{margin-bottom:2px;}
+  .proto-row{display:flex; gap:16px; flex-wrap:wrap;}
+  .proto-item{font-size:13px; color:var(--paper);}
+  .proto-item span{display:block; font-size:10px; color:var(--paper-dim); text-transform:uppercase; letter-spacing:.08em;}
+
+  .video-link{
+    display:flex; align-items:center; gap:8px;
+    margin-top:4px; padding:10px 12px;
+    background:var(--panel-2); border:1px solid var(--line); border-radius:10px;
+    color:var(--ember); text-decoration:none; font-size:13px; font-weight:700;
+  }
+  .video-play{
+    flex:0 0 auto; width:20px; height:20px; border-radius:50%;
+    background:var(--ember); color:#1a1206; font-size:9px;
+    display:flex; align-items:center; justify-content:center;
+  }
+
+  /* ---------- FOOTER NAV ---------- */
+  .fab-bar{
+    position:fixed; bottom:0; left:0; right:0; z-index:30;
+    background:rgba(29,28,21,0.92); backdrop-filter:blur(6px);
+    border-top:1px solid var(--line);
+    display:flex; justify-content:center; gap:10px;
+    padding:12px 18px calc(12px + env(safe-area-inset-bottom));
+  }
+  .fab-btn{
+    flex:1; max-width:220px;
+    background:var(--panel-2); border:1px solid var(--line); color:var(--paper);
+    padding:11px 14px; border-radius:10px; font-size:13px; font-weight:700;
+    text-align:center; cursor:pointer;
+  }
+  .fab-btn.primary{background:var(--ember); color:#1a1206; border-color:var(--ember);}
+
+  .empty-note{
+    text-align:center; color:var(--paper-dim); font-size:12.5px; padding:30px 0;
+  }
+
+  @media (min-width:640px){
+    .intro-grid{grid-template-columns:repeat(4,1fr);}
+    main{max-width:640px; margin:0 auto;}
+    header.top{max-width:640px; margin:0 auto; width:100%;}
+    .tabs{max-width:640px; margin:0 auto;}
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="brand-row">
+    <div>
+      <div class="brand">THE <span>MASTER</span></div>
+      <div class="subtitle">Plano completo de mobilidade</div>
+    </div>
+    <div class="progress-pill" id="progressPill">0 <span style="opacity:.5">/</span> 0</div>
+  </div>
+</header>
+
+<div class="intro">
+  <h2>Quando usar a mobilidade</h2>
+  <div class="intro-grid">
+    <div class="intro-item"><b>Lombar</b>antes de treinar membros inferiores</div>
+    <div class="intro-item"><b>Ombros</b>antes de treinar membros superiores</div>
+    <div class="intro-item"><b>Torácica</b>antes de treino de membro inferior e superior</div>
+    <div class="intro-item"><b>Quadril</b>antes de treinar membros inferiores</div>
+  </div>
+  <a class="video-link" style="margin-top:10px" href="https://www.youtube.com/watch?v=wbn179GahQU" target="_blank" rel="noopener">
+    <span class="video-play">▶</span> Vídeo de apresentação — Thauane Furquim
+  </a>
+</div>
+
+<div class="tabs" id="tabs"></div>
+
+<main id="main"></main>
+
+<div class="fab-bar">
+  <div class="fab-btn" id="resetBtn">Reiniciar progresso</div>
+  <div class="fab-btn primary" id="randomBtn">Sortear exercício</div>
+</div>
+
+<script>
+/* =======================================================
+   DADOS — extraídos do e-book "THE MASTER" (uso pessoal)
+   ======================================================= */
+const DATA = [
+  {
+    "cat": "Ombro",
+    "icon": "◐",
+    "items": [
+      {
+        "id": "ombro-1",
+        "nome": "Ombro 1",
+        "nivel": "facil",
+        "tecnica": "Rotação externa",
+        "beneficios": [
+          "Facilitar os movimentos acima da cabeça, mobilizando a articulação",
+          "Alívio de desconfortos no ombro"
+        ],
+        "protocolo": "1 a 3x de 10 a 15 reps",
+        "material": "Superband média",
+        "acao": "Posicione o elástico em cima do úmero, cerca de dois dedos da linha articular do ombro. Com 90° de abdução de ombro e 90° de cotovelo, realize rotação externa de ombro. Deforme o elástico para que ele faça uma tração no ombro enquanto você realiza o movimento.",
+        "video": "OIVU6Uo48zM"
+      },
+      {
+        "id": "ombro-2",
+        "nome": "Ombro 2",
+        "nivel": "avancado",
+        "tecnica": "Rotação interna do ombro",
+        "beneficios": [
+          "Aumentar a mobilidade de rotação interna"
+        ],
+        "protocolo": "1 a 3x de 10 a 15 reps",
+        "material": "Superband média",
+        "acao": "Fixe a band no rack na altura do ombro e encaixe na altura da cabeça do úmero. Coloque um pouco de tensão levando o corpo para frente. Realize uma rotação interna de ombro, com a mão espalmada nas costas.",
+        "video": "hgrvds5saMg"
+      },
+      {
+        "id": "ombro-3",
+        "nome": "Ombro 3",
+        "nivel": "facil",
+        "tecnica": "Mobilidade e ativação da cintura escapular",
+        "beneficios": [
+          "Ganhar movimento na região escapular e tração do ombro",
+          "Melhora da postura",
+          "Melhora dos movimentos do ombro, evitando lesões"
+        ],
+        "protocolo": "1 a 3x de 10 a 15 reps",
+        "material": "Superband média",
+        "acao": "Fixe a band na altura do ombro. Segure-a com ombro a 90° e cotovelo estendido. Mantenha uma deformidade no elástico e realize retração e protração da escápula.",
+        "video": "XzfaFgmHYVM"
+      },
+      {
+        "id": "ombro-4",
+        "nome": "Ombro 4",
+        "nivel": "facil",
+        "tecnica": "Rotação externa de ombro",
+        "beneficios": [
+          "Aumentar a mobilidade de rotação externa de ombro"
+        ],
+        "protocolo": "1 a 3x de 10 a 15 reps",
+        "material": "Superband leve",
+        "acao": "Pise no elástico, segure com uma mão e leve na altura do ombro com cotovelo flexionado, posição de front rack. Com a outra mão sobre o cotovelo, gire realizando uma rotação externa de ombro.",
+        "video": "sWGOAcYwiSY"
+      },
+      {
+        "id": "ombro-5",
+        "nome": "Ombro 5",
+        "nivel": "facil",
+        "tecnica": "Deslizamento articular do ombro",
+        "beneficios": [
+          "Facilitar os movimentos acima da cabeça, mobilizando a articulação em rolamento"
+        ],
+        "protocolo": "1 a 3x de 10 a 15 reps",
+        "material": "Superband leve",
+        "acao": "Posicione o elástico em cima do úmero, cerca de dois dedos da linha articular do ombro. De lado, apoie a mão na parede e pise no elástico. Realize rotação interna e externa de ombro.",
+        "video": "hzjDPgs-wgI"
+      },
+      {
+        "id": "ombro-6",
+        "nome": "Ombro 6",
+        "nivel": "facil",
+        "tecnica": "Mobilidade da cintura escapular",
+        "beneficios": [
+          "Ganhar movimento na região escapular",
+          "Melhora da postura",
+          "Melhora dos movimentos do ombro, evitando lesões"
+        ],
+        "protocolo": "1 a 3x de 10 a 15 reps",
+        "material": "Nenhum",
+        "acao": "Em 4 apoios, coluna neutra, leve os ombros em direção à orelha, depois teto, quadril e chão — como se estivesse fazendo um quadrado.",
+        "video": "9IK2UDzfUiI"
+      },
+      {
+        "id": "ombro-7",
+        "nome": "Ombro 7",
+        "nivel": "intermediario",
+        "tag": "Progressão",
+        "tecnica": "Mobilidade da cintura escapular",
+        "beneficios": [
+          "Ganhar movimento na região escapular",
+          "Melhora da postura",
+          "Melhora dos movimentos do ombro, evitando lesões"
+        ],
+        "protocolo": "1 a 3x de 10 a 15 reps",
+        "material": "Nenhum",
+        "acao": "Em 4 apoios, uma mão no chão e outra na parede. 1º movimento: empurre a parede e realize elevação e depressão da escápula. 2º movimento: empurre o chão e realize adução e abdução de escápula.",
+        "video": "0AUyxv4hWaY"
+      },
+      {
+        "id": "ombro-9",
+        "nome": "Ombro 9",
+        "nivel": "intermediario",
+        "tecnica": "Mobilidade de ombro",
+        "beneficios": [
+          "Melhora da rotação interna de ombro"
+        ],
+        "protocolo": "1 a 3x de 10 a 15 reps",
+        "material": "Bastão ou PVC",
+        "acao": "Com um bastão ou toalha, puxe para cima com uma das mãos. Mantenha o ombro estabilizado, trazendo a outra mão o mais alto possível para ganhar rotação interna.",
+        "video": "LdZ373eH7so"
+      },
+      {
+        "id": "ombro-11",
+        "nome": "Ombro 11",
+        "nivel": "facil",
+        "tecnica": "Ativação muscular e mobilidade de ombro",
+        "beneficios": [
+          "Melhora dos movimentos do ombro e ativação muscular"
+        ],
+        "protocolo": "1 a 3x de 10 a 15 reps",
+        "material": "Nenhum",
+        "acao": "Em 4 apoios, eleve o braço acima da cabeça e leve a mão até tocar a nuca. Desça com cotovelo reto, estenda o ombro e flexione o cotovelo tentando alcançar o meio das costas. Repita o ciclo.",
+        "video": "PPOquMHE_8s"
+      },
+      {
+        "id": "ombro-12",
+        "nome": "Ombro 12",
+        "nivel": "avancado",
+        "tag": "Progressão",
+        "tecnica": "Ativação muscular e mobilidade de ombro",
+        "beneficios": [
+          "Melhora dos movimentos do ombro e ativação muscular"
+        ],
+        "protocolo": "1 a 3x de 10 a 15 reps",
+        "material": "Nenhum",
+        "acao": "Deitado, eleve o braço acima da cabeça e leve as mãos até tocar a nuca. Desça com cotovelo reto, estenda o ombro e flexione tentando alcançar o meio das costas. Repita passo a passo.",
+        "video": "GaEyjvE_7nk"
+      },
+      {
+        "id": "ombro-13",
+        "nome": "Ombro 13",
+        "nivel": "facil",
+        "tecnica": "Mobilidade de ombro",
+        "beneficios": [
+          "Melhora da abdução de ombro"
+        ],
+        "protocolo": "1 a 3x de 10 a 15 reps",
+        "material": "Nenhum",
+        "acao": "Em decúbito lateral, flexione quadril e joelho. Um braço esticado com a palma para baixo e cabeça apoiada sobre ele. A outra mão esticada no quadril realiza abdução de ombro até tentar encostar na outra mão, sem compensar com o tronco.",
+        "video": "k0VRX9EU4Ok"
+      },
+      {
+        "id": "ombro-14",
+        "nome": "Ombro 14",
+        "nivel": "facil",
+        "tecnica": "Mobilização dos tecidos moles (Grande Dorsal)",
+        "beneficios": [
+          "Mobilização tecidual do grande dorsal e melhora da mobilidade de ombro",
+          "Mobilidade do ombro, em especial acima da cabeça"
+        ],
+        "protocolo": "1x de 45s a 1min",
+        "material": "Foam roller",
+        "acao": "Apoie o foam na parede e encoste a região do grande dorsal no rolo, da altura da axila até as costelas, com a mão atrás da cabeça. Deslize lentamente sobre todo o músculo.",
+        "video": "CGmsYhHj4nA"
+      },
+      {
+        "id": "ombro-15",
+        "nome": "Ombro 15",
+        "nivel": "facil",
+        "tecnica": "Mobilização dos tecidos moles (Redondo menor)",
+        "beneficios": [
+          "Mobilização tecidual do redondo menor e melhora da mobilidade de ombro",
+          "Mobilidade em rotação"
+        ],
+        "protocolo": "1x de 45s a 1min",
+        "material": "Foam roller e um halter",
+        "acao": "Em decúbito lateral, apoie o redondo menor no foam, próximo à linha articular do ombro. Segure o halter acima da cabeça, alongando o braço de cima. Mantenha a posição.",
+        "video": "n3WT0xUkV-U"
+      },
+      {
+        "id": "ombro-16",
+        "nome": "Ombro 16",
+        "nivel": "intermediario",
+        "tag": "Progressão",
+        "tecnica": "Ativação muscular e mobilidade de ombro",
+        "beneficios": [
+          "Melhora dos movimentos do ombro e ativação muscular"
+        ],
+        "protocolo": "1 a 3x de 10 a 15 reps",
+        "material": "Nenhum",
+        "acao": "Sentado, eleve o braço acima da cabeça e leve as mãos até tocar a nuca. Desça com cotovelo reto, estenda o ombro e flexione tentando alcançar o meio das costas. Repita passo a passo.",
+        "video": "yXUNKroOv2A"
+      }
+    ]
+  },
+  {
+    "cat": "Cotovelo",
+    "icon": "◑",
+    "items": [
+      {
+        "id": "cotovelo-2",
+        "nome": "Cotovelo 2",
+        "nivel": "facil",
+        "tecnica": "Mobilização dos tecidos moles do antebraço",
+        "beneficios": [
+          "Diminuir a sobrecarga nos flexores de punho e prevenir epicondilite medial"
+        ],
+        "protocolo": "1x de 1 a 1:30min",
+        "material": "Barra olímpica",
+        "acao": "Apoie a barra sobre o antebraço e deslize sobre ele com leve pressão.",
+        "video": "0OB-M2gWKSA"
+      },
+      {
+        "id": "cotovelo-3",
+        "nome": "Cotovelo 3",
+        "nivel": "facil",
+        "tecnica": "Mobilidade de flexão de cotovelo",
+        "beneficios": [
+          "Aumentar a flexão de cotovelo"
+        ],
+        "protocolo": "1 a 3x de 10 a 15 reps",
+        "material": "Superband média",
+        "acao": "Fixe a superband cerca de um palmo acima do chão. Deitado em decúbito lateral, coloque a band na linha articular do cotovelo e, na mesma posição, realize pronação de antebraço com flexão de cotovelo.",
+        "video": "nVsDY7seoFw"
+      },
+      {
+        "id": "cotovelo-4",
+        "nome": "Cotovelo 4",
+        "nivel": "facil",
+        "tecnica": "Mobilidade de extensão de cotovelo",
+        "beneficios": [
+          "Aumentar a extensão de cotovelo"
+        ],
+        "protocolo": "1 a 3x de 10 a 15 reps",
+        "material": "Superband média",
+        "acao": "Apoie a palma da mão no chão, voltada para trás, com a band na linha articular do cotovelo (parte medial). Realize a extensão de cotovelo, jogando o tronco levemente para frente.",
+        "video": "HboRBwML1vI"
+      }
+    ]
+  },
+  {
+    "cat": "Torácica",
+    "icon": "◒",
+    "items": [
+      {
+        "id": "toracica-1",
+        "nome": "Torácica 1",
+        "nivel": "facil",
+        "tecnica": "Open book",
+        "beneficios": [
+          "Melhora da postura",
+          "Melhora dos movimentos de ombro",
+          "Previne dor cervical, no ombro e lombar"
+        ],
+        "protocolo": "1 a 3x de 10 a 15 reps",
+        "material": "Nenhum",
+        "acao": "Em decúbito lateral, flexione quadril e joelho, braços unidos e esticados. Gire o tronco para o outro lado até o limite onde conseguir olhar, sem o ombro desencostar do chão.",
+        "video": "zQLeeRBQC-Q"
+      },
+      {
+        "id": "toracica-2",
+        "nome": "Torácica 2",
+        "nivel": "facil",
+        "tecnica": "Mobilidade torácica",
+        "beneficios": [
+          "Melhora da postura e dos movimentos do ombro"
+        ],
+        "protocolo": "1 a 3x de 10 a 15 reps",
+        "material": "Foam roller",
+        "acao": "Deite com o foam no final das escápulas e leve os braços acima da cabeça. A lombar não deve sair do lugar enquanto o braço se movimenta.",
+        "video": "8ghYYSOQsII"
+      },
+      {
+        "id": "toracica-3",
+        "nome": "Torácica 3",
+        "nivel": "facil",
+        "tecnica": "Mobilidade torácica e ombro",
+        "beneficios": [
+          "Melhora da postura e dos movimentos do ombro"
+        ],
+        "protocolo": "1 a 3x de 10 a 15 reps",
+        "material": "Nenhum",
+        "acao": "De frente para a parede, com as duas mãos apoiadas, flexione o tronco e levemente o joelho, direcionando a cabeça para o chão, deixando-a “cair” abaixo dos ombros.",
+        "video": "B2nbfEFDlq4"
+      },
+      {
+        "id": "toracica-4",
+        "nome": "Torácica 4",
+        "nivel": "facil",
+        "tecnica": "Mobilidade torácica",
+        "beneficios": [
+          "Melhora da postura e dos movimentos de ombro",
+          "Previne dor cervical, no ombro e lombar"
+        ],
+        "protocolo": "1 a 3x de 10 a 15 reps",
+        "material": "Nenhum",
+        "acao": "Em posição de 4 apoios, realize uma rotação de tronco cruzando um braço sobre o outro, olhando para a mão que está embaixo.",
+        "video": "rWHuKkPu5a4"
+      },
+      {
+        "id": "toracica-5",
+        "nome": "Torácica 5",
+        "nivel": "intermediario",
+        "tecnica": "Mobilidade torácica",
+        "beneficios": [
+          "Aumento da mobilidade torácica",
+          "Melhora da postura",
+          "Previne dor lombar, cervical e de ombro"
+        ],
+        "protocolo": "1 a 3x de 10 a 15 reps",
+        "material": "Bastão ou PVC",
+        "acao": "Em 4 apoios, segure o bastão com mãos apontadas para baixo. Gire o tronco apoiando uma parte do bastão no chão enquanto a outra vai para trás, cotovelos estendidos, acompanhando com o olhar a mão de cima.",
+        "video": "3wjM5X3pNEM"
+      },
+      {
+        "id": "toracica-6",
+        "nome": "Torácica 6",
+        "nivel": "facil",
+        "tecnica": "Mobilidade torácica",
+        "beneficios": [
+          "Melhora da postura e dos movimentos de ombro",
+          "Previne dor cervical, no ombro e lombar"
+        ],
+        "protocolo": "1 a 3x de 10 a 15 reps",
+        "material": "Nenhum",
+        "acao": "Em posição de 4 apoios, gire o tronco para um lado olhando para a mão. Use o tronco a seu favor, sem compensar com o ombro.",
+        "video": "SQlr7ugbRZg"
+      },
+      {
+        "id": "toracica-7",
+        "nome": "Torácica 7",
+        "nivel": "intermediario",
+        "tecnica": "Mobilidade torácica",
+        "beneficios": [
+          "Melhora da postura e dos movimentos de ombro",
+          "Previne dor cervical, no ombro e lombar"
+        ],
+        "protocolo": "1 a 3x de 10 a 15 reps",
+        "material": "Bastão e um banco",
+        "acao": "Ajoelhe no chão com cotovelos apoiados em uma superfície, usando um bastão para manter o posicionamento do braço. Movimente o peito em direção ao chão, realizando extensão da coluna torácica.",
+        "video": "5y_JyiW38rc"
+      },
+      {
+        "id": "toracica-8",
+        "nome": "Torácica 8",
+        "nivel": "intermediario",
+        "tecnica": "Mobilidade torácica e ombro",
+        "beneficios": [
+          "Melhora da postura e dos movimentos do ombro",
+          "Previne dor cervical, lombar e de ombro"
+        ],
+        "protocolo": "1 a 3x de 10 a 15 reps",
+        "material": "Nenhum",
+        "acao": "Encoste em uma parede em posição de avanço, joelho de apoio no chão, braços juntos e esticados. Realize a rotação de tronco até o limite onde conseguir olhar.",
+        "video": "aLw3yXNE_A4"
+      },
+      {
+        "id": "toracica-9",
+        "nome": "Torácica 9",
+        "nivel": "avancado",
+        "tecnica": "Mobilidade torácica e ombro",
+        "beneficios": [
+          "Melhora da postura e dos movimentos de ombro",
+          "Previne dor cervical, no ombro e lombar"
+        ],
+        "protocolo": "1 a 3x de 10 a 15 reps",
+        "material": "Nenhum",
+        "acao": "Encoste em uma parede em posição de avanço, joelho de apoio no chão. Arraste as mãos por cima da cabeça olhando para a mão até alinhar um braço com o outro, e volte pelo mesmo caminho.",
+        "video": "2dAHs1CfxEc"
+      },
+      {
+        "id": "toracica-10",
+        "nome": "Torácica 10",
+        "nivel": "intermediario",
+        "tecnica": "Mobilidade de quadril em extensão e torácica",
+        "beneficios": [
+          "Aumento da mobilidade de quadril e torácica",
+          "Melhora do agachamento e postura",
+          "Previne dor lombar, cervical e de ombro"
+        ],
+        "protocolo": "1 a 3x de 10 a 15 reps",
+        "material": "Nenhum",
+        "acao": "Na posição de avanço, ajoelhe sobre a perna trabalhada. Desloque o tronco para frente realizando extensão de quadril e gire o tronco com uma mão na nuca, abdômen contraído.",
+        "video": "y1msWP31QyE"
+      },
+      {
+        "id": "toracica-11",
+        "nome": "Torácica 11",
+        "nivel": "intermediario",
+        "tecnica": "Mobilidade torácica",
+        "beneficios": [
+          "Melhora da postura e dos movimentos do ombro"
+        ],
+        "protocolo": "Manter 1 min na posição",
+        "material": "Foam roller e uma barra leve",
+        "acao": "Deite com o foam no final das escápulas, segure a barra com pegada aberta e leve os braços acima da cabeça. Mantenha a posição.",
+        "video": "S9qI-stq7Yo"
+      },
+      {
+        "id": "toracica-12",
+        "nome": "Torácica 12",
+        "nivel": "intermediario",
+        "tecnica": "Mobilidade torácica e ombro",
+        "beneficios": [
+          "Melhora da postura e dos movimentos de ombro",
+          "Previne dor cervical, no ombro e lombar"
+        ],
+        "protocolo": "1 a 3x de 10 a 15 reps",
+        "material": "Nenhum",
+        "acao": "Em decúbito lateral, flexione quadril e joelho, braços unidos e esticados. Arraste as mãos por cima da cabeça olhando para a mão até alinhar um braço com o outro e volte pelo mesmo caminho.",
+        "video": "uTswR4s4WIw"
+      }
+    ]
+  },
+  {
+    "cat": "Punho",
+    "icon": "◓",
+    "items": [
+      {
+        "id": "punho-1",
+        "nome": "Punho 1",
+        "nivel": "facil",
+        "tecnica": "Mobilidade para extensão de punho",
+        "beneficios": [
+          "Melhora da mobilidade de punho"
+        ],
+        "protocolo": "1 a 3x de 10 a 15 reps",
+        "material": "Nenhum",
+        "acao": "Ajoelhe-se no chão com a palma das mãos voltada para cima. Mova-se para trás como se fosse sentar nos calcanhares, sem tirar as mãos do chão.",
+        "video": "dO1N5pSIoWo"
+      },
+      {
+        "id": "punho-2",
+        "nome": "Punho 2",
+        "nivel": "facil",
+        "tecnica": "Mobilidade para flexão de punho",
+        "beneficios": [
+          "Melhora da mobilidade de punho",
+          "Melhora nas posições de front rack"
+        ],
+        "protocolo": "1 a 3x de 10 a 15 reps",
+        "material": "Nenhum",
+        "acao": "Ajoelhe-se no chão com a palma das mãos apontadas para trás. Mova-se para trás como se fosse sentar nos calcanhares, sem tirar a palma das mãos do chão.",
+        "video": "cHjgWs0BzS8"
+      },
+      {
+        "id": "punho-3",
+        "nome": "Punho 3",
+        "nivel": "facil",
+        "tecnica": "Mobilidade para extensão de punho",
+        "beneficios": [
+          "Melhora da mobilidade de punho em extensão"
+        ],
+        "protocolo": "1 a 3x de 10 a 15 reps",
+        "material": "Superband média",
+        "acao": "Ajoelhe-se com as palmas no chão e a band na região medial da linha articular do punho. Com deformidade no elástico, leve o corpo para frente sem tirar a palma da mão do chão (tente também a band na região lateral).",
+        "video": "d0aeq8iQsUc"
+      }
+    ]
+  },
+  {
+    "cat": "Lombar",
+    "icon": "◕",
+    "items": [
+      {
+        "id": "lombar-1",
+        "nome": "Lombar 1",
+        "nivel": "facil",
+        "tecnica": "Tração lombar",
+        "beneficios": [
+          "Descompressão articular, diminuindo a pressão sobre os discos intervertebrais",
+          "Aumenta a lubrificação articular e diminui dores e desconfortos na lombar"
+        ],
+        "protocolo": "2x de 1 min",
+        "material": "Superband média",
+        "acao": "Fixe a band na altura do joelho para gerar inclinação ao deitar. Posicione o elástico em cima do quadril e deite no chão. Rotacione o quadril levemente, podendo fazer retroversão e anteroversão. Deixe o quadril te puxar.",
+        "video": "27ei8-7u8Dg"
+      },
+      {
+        "id": "lombar-2",
+        "nome": "Lombar 2",
+        "nivel": "intermediario",
+        "tecnica": "Mackenzie em flexão",
+        "beneficios": [
+          "Aumento da mobilidade lombar em flexão",
+          "Aumento da lubrificação articular",
+          "Diminuição das dores e desconforto na região"
+        ],
+        "protocolo": "1 a 3x de 10 a 15 reps",
+        "material": "Cadeira",
+        "acao": "Sentado em uma cadeira, flexione o corpo para frente levando o braço por entre as pernas. Mantenha por 3 segundos e repita.",
+        "video": "m7ZvMOmlEks"
+      },
+      {
+        "id": "lombar-3",
+        "nome": "Lombar 3",
+        "nivel": "avancado",
+        "tecnica": "Mackenzie em flexão",
+        "beneficios": [
+          "Aumento da mobilidade lombar em flexão",
+          "Aumento da lubrificação articular",
+          "Diminuição das dores e desconforto na região"
+        ],
+        "protocolo": "1 a 3x de 10 a 15 reps",
+        "material": "Nenhum",
+        "acao": "Mantenha os pés na linha do ombro e realize a flexão de coluna, levando os braços até o chão.",
+        "video": "Lgvg3BLn0vY"
+      },
+      {
+        "id": "lombar-4",
+        "nome": "Lombar 4",
+        "nivel": "facil",
+        "tecnica": "The Cat",
+        "beneficios": [
+          "Aumento da mobilidade lombar",
+          "Aumento da lubrificação articular",
+          "Diminuição das dores e desconforto na região"
+        ],
+        "protocolo": "1 a 3x de 10 a 15 reps",
+        "material": "Nenhum",
+        "acao": "Em 4 apoios, realize o movimento de flexão da coluna (olhando para o umbigo) seguido pelo movimento de extensão (olhando para cima).",
+        "video": "OUMeI7omNWk"
+      },
+      {
+        "id": "lombar-5",
+        "nome": "Lombar 5",
+        "nivel": "facil",
+        "tecnica": "Mackenzie em extensão",
+        "beneficios": [
+          "Aumento da mobilidade lombar em extensão",
+          "Aumento da lubrificação articular",
+          "Diminuição das dores e desconforto na região"
+        ],
+        "protocolo": "Manter 3 min na posição",
+        "material": "Travesseiro",
+        "acao": "Em decúbito ventral, adicione um travesseiro na região abdominal se preferir. Realize uma extensão de tronco usando a força dos braços, mantendo quadril no chão e lombar/glúteo relaxados.",
+        "video": "lBiznOqZICU"
+      },
+      {
+        "id": "lombar-6",
+        "nome": "Lombar 6",
+        "nivel": "intermediario",
+        "tag": "Progressão",
+        "tecnica": "Mackenzie em extensão",
+        "beneficios": [
+          "Aumento da mobilidade lombar em extensão",
+          "Aumento da lubrificação articular",
+          "Diminuição das dores e desconforto na região"
+        ],
+        "protocolo": "1 a 3x de 10 a 15 reps",
+        "material": "Nenhum",
+        "acao": "Em decúbito ventral, realize extensão de tronco com a força dos braços. Mantenha quadril no chão, lombar e glúteos relaxados.",
+        "video": "aNiKuLNrZVw"
+      },
+      {
+        "id": "lombar-7",
+        "nome": "Lombar 7",
+        "nivel": "avancado",
+        "tag": "Progressão",
+        "tecnica": "Mackenzie em extensão",
+        "beneficios": [
+          "Aumento da mobilidade lombar em extensão",
+          "Aumento da lubrificação articular",
+          "Diminuição das dores e desconforto na região"
+        ],
+        "protocolo": "1 a 3x de 10 a 15 reps",
+        "material": "Nenhum",
+        "acao": "Em decúbito ventral, realize extensão de tronco com a força dos braços. Quadril no chão, lombar e glúteos relaxados. Afaste as pernas para aumentar a carga.",
+        "video": "xFGgXomKoQQ"
+      },
+      {
+        "id": "lombar-8",
+        "nome": "Lombar 8",
+        "nivel": "facil",
+        "tecnica": "Mackenzie em extensão (flexão de lombar)",
+        "beneficios": [
+          "Aumento da mobilidade lombar em flexão",
+          "Aumento da lubrificação articular",
+          "Diminuição das dores e desconforto na região"
+        ],
+        "protocolo": "1 a 3x de 10 a 15 reps",
+        "material": "Nenhum",
+        "acao": "Em decúbito dorsal, abrace a perna contra o corpo realizando flexão da lombar. Mantenha a pressão por 3 segundos e repita.",
+        "video": "-fN-IDE6gjY"
+      },
+      {
+        "id": "lombar-9",
+        "nome": "Lombar 9",
+        "nivel": "intermediario",
+        "tecnica": "Side to side",
+        "beneficios": [
+          "Aumento da mobilidade lombar",
+          "Aumento da lubrificação articular",
+          "Diminuição das dores e desconforto na região"
+        ],
+        "protocolo": "1 a 3x de 10 a 15 reps",
+        "material": "Nenhum",
+        "acao": "Em decúbito ventral com braços abertos, flexione joelho e quadril, tirando os pés do chão. Ombro apoiado, leve as pernas de um lado para o outro (para facilitar, mantenha os pés no chão).",
+        "video": "E-9w7xI8qTo"
+      },
+      {
+        "id": "lombar-10",
+        "nome": "Lombar 10",
+        "nivel": "facil",
+        "tecnica": "Swan e posição de descanso",
+        "beneficios": [
+          "Aumento da mobilidade lombar",
+          "Aumento da lubrificação articular",
+          "Diminuição das dores e desconforto na região"
+        ],
+        "protocolo": "1 a 3x de 10 a 15 reps",
+        "material": "Nenhum",
+        "acao": "Em decúbito ventral, descanse sobre os calcanhares por alguns segundos. Volte arredondando a coluna e termine com extensão, mantendo por alguns segundos (3s).",
+        "video": "E4FrUFMyrZM"
+      }
+    ]
+  },
+  {
+    "cat": "Quadril",
+    "icon": "◔",
+    "items": [
+      {
+        "id": "quadril-1f",
+        "nome": "Quadril 1",
+        "nivel": "facil",
+        "tecnica": "Mobilidade de quadril em abdução",
+        "beneficios": [
+          "Aumento da mobilidade de quadril",
+          "Melhora do agachamento",
+          "Previne dor lombar e lesões"
+        ],
+        "protocolo": "1 a 3x de 10 a 15 reps",
+        "material": "Nenhum",
+        "acao": "Ajoelhe sobre a perna trabalhada. Abra a outra perna com o pé no chão como apoio. Desloque o tronco lateralmente, abrindo a perna apoiada.",
+        "video": "6nTD1VWn2sQ"
+      },
+      {
+        "id": "quadril-1a",
+        "nome": "Quadril 1",
+        "nivel": "avancado",
+        "tecnica": "Mobilidade de quadril em flexão / alongamento cadeia posterior",
+        "beneficios": [
+          "Aumentar a mobilidade do quadril em flexão",
+          "Aumentar a flexibilidade dos isquiotibiais",
+          "Diminuir sobrecarga na coluna lombar"
+        ],
+        "protocolo": "2x de 10-12 reps",
+        "material": "Superband média",
+        "acao": "Fixe a superband na altura do quadril e encaixe na virilha. Leve a mesma perna para frente causando deformidade no elástico. Realize flexão de tronco apoiando as mãos no chão e gire em torno da perna da frente.",
+        "video": "6nTD1VWn2sQ"
+      },
+      {
+        "id": "quadril-2",
+        "nome": "Quadril 2",
+        "nivel": "intermediario",
+        "tecnica": "Mobilidade de quadril em abdução e flexão",
+        "beneficios": [
+          "Aumento da mobilidade de quadril",
+          "Melhora do agachamento",
+          "Previne dor lombar e lesões"
+        ],
+        "protocolo": "1 a 3x de 10 a 15 reps",
+        "material": "Nenhum",
+        "acao": "Ajoelhe sobre uma perna, a outra esticada com pé apoiado. Apoie as duas mãos no chão à frente do corpo e ajoelhe-se sobre a outra perna.",
+        "video": "SYfPIj8jxaU"
+      },
+      {
+        "id": "quadril-3",
+        "nome": "Quadril 03",
+        "nivel": "facil",
+        "tecnica": "Cossack squat",
+        "beneficios": [
+          "Melhora da mobilidade de quadril e dos movimentos de agachamento",
+          "Alongamento dos adutores"
+        ],
+        "protocolo": "1 a 3x de 10 a 15 reps",
+        "material": "Anilha",
+        "acao": "Segure uma anilha à frente do corpo, base bem aberta (posição de sumô). Realize um agachamento flexionando um joelho enquanto o outro estende (o pé pode sair, apoiado apenas o calcanhar). Sem equipamento fica mais difícil.",
+        "video": "A_rcghcJMHM"
+      },
+      {
+        "id": "quadril-4",
+        "nome": "Quadril 4",
+        "nivel": "facil",
+        "tecnica": "Mobilidade de quadril",
+        "beneficios": [
+          "Melhora da mobilidade de quadril",
+          "Melhora nos agachamentos",
+          "Prevenção de dor lombar e joelho"
+        ],
+        "protocolo": "1 a 3x de 10 a 15 reps",
+        "material": "Nenhum",
+        "acao": "Posição 90º/90º de quadril. Transite de um lado para o outro de forma controlada.",
+        "video": "nZEsQkcItK8"
+      },
+      {
+        "id": "quadril-5",
+        "nome": "Quadril 5",
+        "nivel": "intermediario",
+        "tecnica": "Mobilidade de quadril",
+        "beneficios": [
+          "Melhora da mobilidade de quadril",
+          "Melhora nos agachamentos",
+          "Prevenção de dor lombar e joelhos"
+        ],
+        "protocolo": "1 a 3x de 10 a 15 reps",
+        "material": "Nenhum",
+        "acao": "Posição 90º/90º de quadril, transitando de um lado para o outro. Adicione uma elevação do quadril ao final, ficando semi ajoelhado sem usar as mãos.",
+        "video": "6G731guYR4A"
+      },
+      {
+        "id": "quadril-6",
+        "nome": "Quadril 6",
+        "nivel": "intermediario",
+        "tecnica": "Mobilidade de quadril e alongamento isquiotibiais",
+        "beneficios": [
+          "Melhora da mobilidade de quadril e alongamento da cadeia posterior",
+          "Melhora nos movimentos de agachamento",
+          "Previne dores na lombar e joelhos"
+        ],
+        "protocolo": "1 a 3x de 10 a 15 reps",
+        "material": "Nenhum",
+        "acao": "Apoie um joelho no chão, a outra perna estendida apoiada no calcanhar. Realize flexão de tronco como se o peito fosse encontrar o joelho, abdômen contraído.",
+        "video": "vfttctsA6V8"
+      },
+      {
+        "id": "quadril-7",
+        "nome": "Quadril 7",
+        "nivel": "intermediario",
+        "tecnica": "Mobilidade de quadril e alongamento piriforme",
+        "beneficios": [
+          "Melhora da mobilidade de quadril e alongamento da cadeia posterior",
+          "Melhora nos movimentos de agachamento",
+          "Previne dores na lombar e joelhos"
+        ],
+        "protocolo": "1 a 3x de 10 a 15 reps",
+        "material": "Nenhum",
+        "acao": "Segure algo como apoio, cruze uma perna sobre a outra e estenda o quadril flexionando o joelho. Braços esticados ao descer o joelho, abdômen contraído.",
+        "video": "FIqXt8489As"
+      },
+      {
+        "id": "quadril-8",
+        "nome": "Quadril 8",
+        "nivel": "facil",
+        "tecnica": "Mobilidade de quadril e alongamento piriforme",
+        "beneficios": [
+          "Melhora da mobilidade de quadril e alongamento piriforme",
+          "Melhora nos movimentos de agachamento",
+          "Previne dores na lombar e joelhos"
+        ],
+        "protocolo": "1 a 3x de 10 a 15 reps",
+        "material": "Nenhum",
+        "acao": "Sentado, cruze uma perna sobre a outra e flexione o tronco tentando relaxar as mãos no chão, mantendo o joelho cruzado para baixo (use uma mão de apoio se precisar).",
+        "video": "wNdiWXuu-ks"
+      },
+      {
+        "id": "quadril-9",
+        "nome": "Quadril 9",
+        "nivel": "facil",
+        "tecnica": "Movimento de cócoras",
+        "beneficios": [
+          "Aumento da mobilidade de membros inferiores (quadril, joelho e tornozelo)",
+          "Favorece o fluxo gastrointestinal",
+          "Descompressão da coluna"
+        ],
+        "protocolo": "Acumular 3 min na posição",
+        "material": "Nenhum",
+        "acao": "Posição de cócoras, base um pouco mais aberta. Se o calcanhar sair do chão, apoie-o em uma anilha, na parede ou segurando em algo como uma barra fixa. Mantenha ou movimente o corpo de um lado para o outro.",
+        "video": "FourMDOrH1A"
+      },
+      {
+        "id": "quadril-10",
+        "nome": "Quadril 10",
+        "nivel": "avancado",
+        "tecnica": "Movimento de cócoras",
+        "beneficios": [
+          "Aumento da mobilidade de membros inferiores (quadril, joelho e tornozelo)",
+          "Favorece o fluxo gastrointestinal",
+          "Descompressão da coluna"
+        ],
+        "protocolo": "1 a 3x de 10 a 15 reps",
+        "material": "Nenhum",
+        "acao": "Posição de cócoras, base um pouco mais fechada. Com uma mão apoiada no chão, gire o tronco e a outra mão até onde conseguir olhar.",
+        "video": "_szhKdqFnzA"
+      },
+      {
+        "id": "quadril-11",
+        "nome": "Quadril 11",
+        "nivel": "facil",
+        "tecnica": "Mobilidade de quadril em flexão / alongamento cadeia posterior",
+        "beneficios": [
+          "Aumentar a mobilidade do quadril em flexão",
+          "Aumentar a flexibilidade dos isquiotibiais",
+          "Diminuir sobrecarga na coluna lombar"
+        ],
+        "protocolo": "1 a 3x de 10 a 15 reps",
+        "material": "Superband média",
+        "acao": "Fixe a superband na altura do quadril e encaixe na virilha. Leve a mesma perna para frente causando deformidade no elástico. Apoiando em algo (banco ou bloco), flexione e estenda o joelho.",
+        "video": "OkVGGV8nVgU"
+      },
+      {
+        "id": "quadril-12",
+        "nome": "Quadril 12",
+        "nivel": "intermediario",
+        "tecnica": "Tração articular do quadril",
+        "beneficios": [
+          "Descompressão articular diminuindo a dor",
+          "Aumento do espaço articular e produção de líquido sinovial"
+        ],
+        "protocolo": "1 a 3x de 10 a 15 reps",
+        "material": "Superband média e rolo",
+        "acao": "Fixe a superband cerca de um palmo acima do chão, envolva no tornozelo cruzando no peito do pé em dorsiflexão. Apoie a panturrilha no rolo e realize rotação interna e externa do quadril.",
+        "video": "sJZK4vxme-k"
+      },
+      {
+        "id": "quadril-13",
+        "nome": "Quadril 13",
+        "nivel": "facil",
+        "tecnica": "Alongamento dos flexores de quadril",
+        "beneficios": [
+          "Aumentar o alongamento de flexores de quadril, melhorando extensão e agachamento"
+        ],
+        "protocolo": "1 a 3x de 10 a 15 reps",
+        "material": "Superband média",
+        "acao": "Postura de avanço com um joelho apoiado, elástico no pé de trás levado até a altura do ombro. Desloque o quadril para frente e volte.",
+        "video": "FGjeLRmYyE4"
+      },
+      {
+        "id": "quadril-15",
+        "nome": "Quadril 15",
+        "nivel": "facil",
+        "tecnica": "Mobilização dos tecidos moles (Glúteo médio)",
+        "beneficios": [
+          "Mobilização tecidual do glúteo médio",
+          "Melhora do agachamento e ativação do glúteo",
+          "Previne dores no joelho e lombar"
+        ],
+        "protocolo": "1x de 45s a 1min",
+        "material": "Foam roller",
+        "acao": "Em decúbito lateral, apoie o glúteo no foam, perna de cima apoiada no chão cruzando a outra que fica estendida. Deslize lentamente sobre o músculo.",
+        "video": "zQlvu0X2uPo"
+      },
+      {
+        "id": "quadril-17",
+        "nome": "Quadril 17",
+        "nivel": "facil",
+        "tecnica": "Mobilidade de quadril em extensão",
+        "beneficios": [
+          "Aumento da mobilidade de quadril"
+        ],
+        "protocolo": "1 a 3x de 10 a 15 reps",
+        "material": "Nenhum",
+        "acao": "Na posição de avanço, ajoelhe sobre a perna trabalhada. Desloque o tronco para frente realizando extensão de quadril e anteriorizando o joelho de apoio, abdômen contraído.",
+        "video": "ycSiLXWMWlA"
+      },
+      {
+        "id": "quadril-18",
+        "nome": "Quadril 18",
+        "nivel": "intermediario",
+        "tecnica": "Mobilidade de quadril em extensão",
+        "beneficios": [
+          "Aumento da mobilidade de quadril",
+          "Melhora do agachamento",
+          "Previne dor lombar e lesões"
+        ],
+        "protocolo": "1 a 3x de 10 a 15 reps",
+        "material": "Nenhum",
+        "acao": "Na posição de avanço, ajoelhe sobre a perna trabalhada mantendo a outra à frente de apoio. Tente tirar o joelho do chão estendendo toda a perna, abdômen contraído.",
+        "video": "-1aohnpPB9Y"
+      }
+    ]
+  },
+  {
+    "cat": "Joelho",
+    "icon": "◖",
+    "items": [
+      {
+        "id": "joelho-1",
+        "nome": "Joelho 1",
+        "nivel": "facil",
+        "tecnica": "Mobilidade de joelho",
+        "beneficios": [
+          "Aumento do espaço articular",
+          "Ativação muscular",
+          "Alívio de dor e desconforto na região"
+        ],
+        "protocolo": "1 a 3x de 10 a 15 reps",
+        "material": "Superband média",
+        "acao": "Em avanço, de frente para o rack, posicione a perna trabalhada à frente e o elástico na tíbia, cerca de 2 dedos abaixo da patela. Crie deformidade no elástico e faça o movimento de avanço, flexionando os joelhos.",
+        "video": "G9_3cNlElE0"
+      },
+      {
+        "id": "joelho-2",
+        "nome": "Joelho 2",
+        "nivel": "facil",
+        "tecnica": "Mobilidade de joelho",
+        "beneficios": [
+          "Aumento do espaço articular",
+          "Ativação muscular",
+          "Alívio de dor e desconforto na região"
+        ],
+        "protocolo": "1 a 3x de 10 a 15 reps",
+        "material": "Superband média",
+        "acao": "Em avanço, de lado para o rack, posicione a perna trabalhada à frente e o elástico na tíbia, cerca de 2 dedos abaixo da patela. Crie deformidade e faça o movimento de avanço, flexionando os joelhos.",
+        "video": "1ddPeLroH7A"
+      },
+      {
+        "id": "joelho-3",
+        "nome": "Joelho 3",
+        "nivel": "facil",
+        "tecnica": "Mobilidade de joelho",
+        "beneficios": [
+          "Aumento do espaço articular",
+          "Ativação muscular",
+          "Alívio de dor e desconforto na região"
+        ],
+        "protocolo": "1 a 3x de 10 a 15 reps",
+        "material": "Superband média",
+        "acao": "Na posição de agachamento, de frente para o rack, coloque o elástico na tíbia (2 dedos abaixo da patela). Crie deformidade no elástico e faça o agachamento livre.",
+        "video": "L788X-9fREk"
+      },
+      {
+        "id": "joelho-4",
+        "nome": "Joelho 4",
+        "nivel": "intermediario",
+        "tecnica": "Mobilidade de joelho",
+        "beneficios": [
+          "Melhora do agachamento",
+          "Aumento do espaço articular",
+          "Produção de líquido sinovial"
+        ],
+        "protocolo": "2x de 1 min",
+        "material": "Bastão ou PVC",
+        "acao": "Em agachamento profundo, coloque o bastão atrás do joelho e relaxe o peso corporal sobre ele. Nessa posição, desloque o corpo lateralmente.",
+        "video": "VQe8F-I1NB8"
+      },
+      {
+        "id": "joelho-5",
+        "nome": "Joelho 5",
+        "nivel": "facil",
+        "tecnica": "Liberação do músculo quadríceps",
+        "beneficios": [
+          "Agachamento sem dor e com maior liberdade articular"
+        ],
+        "protocolo": "1x de 1 min cada lado",
+        "material": "Barra olímpica",
+        "acao": "Posicione a barra em cima da coxa, próximo ao quadril. Pressione levemente e deslize lentamente até próximo ao joelho.",
+        "video": "9a-7IF1Gt84"
+      },
+      {
+        "id": "joelho-7",
+        "nome": "Joelho 7",
+        "nivel": "facil",
+        "tecnica": "Liberação da banda iliotibial",
+        "beneficios": [
+          "Agachamento sem dor e com maior liberdade articular"
+        ],
+        "protocolo": "1x de 1 min cada lado",
+        "material": "Uma barra",
+        "acao": "Posicione a barra na lateral da coxa, próximo ao joelho. Pressione e deslize lentamente sobre a perna, principalmente próximo ao joelho.",
+        "video": "RxbDys2IoaQ"
+      }
+    ]
+  },
+  {
+    "cat": "Tornozelo",
+    "icon": "◗",
+    "items": [
+      {
+        "id": "tornozelo-1",
+        "nome": "Tornozelo 1",
+        "nivel": "facil",
+        "tecnica": "Mobilidade articular de tornozelo",
+        "beneficios": [
+          "Melhora no agachamento",
+          "Melhora no LPO (clean, snatch)",
+          "Melhora em saltos (corrida)"
+        ],
+        "protocolo": "2x de 1 min ou 1 a 3x de 10 a 15 reps",
+        "material": "Superband média",
+        "acao": "Coloque o elástico no rack o mais baixo possível e posicione na linha articular do tornozelo. Desloque o joelho em direção à ponta do pé e/ou levemente para lateral.",
+        "video": "szW9yDNTRy0"
+      },
+      {
+        "id": "tornozelo-2",
+        "nome": "Tornozelo 2",
+        "nivel": "intermediario",
+        "tecnica": "Mobilidade articular de tornozelo",
+        "beneficios": [
+          "Melhora no agachamento",
+          "Melhora no LPO (clean, snatch)",
+          "Melhora em saltos (corrida)"
+        ],
+        "protocolo": "2x de 1 min ou 1 a 3x de 10 a 15 reps",
+        "material": "Superband média e uma anilha",
+        "acao": "Elástico no rack o mais baixo possível, na linha articular do tornozelo. Coloque o pé sobre uma base elevando o ponto mobilizado. Desloque o joelho em direção à ponta do pé e/ou lateral.",
+        "video": "lvmyAIhhXkw"
+      },
+      {
+        "id": "tornozelo-3",
+        "nome": "Tornozelo 3",
+        "nivel": "avancado",
+        "tecnica": "Mobilidade articular de tornozelo",
+        "beneficios": [
+          "Melhora no agachamento",
+          "Melhora no LPO (clean, snatch)",
+          "Melhora em saltos (corrida)"
+        ],
+        "protocolo": "2x de 1 min ou 1 a 3x de 10 a 15 reps",
+        "material": "Superband e um banco ou caixa",
+        "acao": "Elástico no rack o mais baixo possível, na linha articular do tornozelo. Pé sobre uma base elevando o ponto mobilizado. Desloque o joelho em direção à ponta do pé e/ou lateral.",
+        "video": "XwhBoQ-du-o"
+      }
+    ]
+  }
+];
+
+/* =======================================================
+   ESTADO + PERSISTÊNCIA
+   ======================================================= */
+let completed = {};
+let storageReady = false;
+
+async function loadState(){
+  try{
+    const res = await window.storage.get('the-master-completed', false);
+    if(res && res.value){ completed = JSON.parse(res.value); }
+    storageReady = true;
+  }catch(e){ storageReady = true; }
+  render();
+}
+async function saveState(){
+  try{ await window.storage.set('the-master-completed', JSON.stringify(completed), false); }catch(e){}
+}
+
+/* =======================================================
+   RENDER
+   ======================================================= */
+let activeCat = "Todos";
+
+function allItems(){
+  return DATA.flatMap(g => g.items.map(it => ({...it, cat:g.cat})));
+}
+
+function totalCounts(){
+  const items = allItems();
+  const done = items.filter(i => completed[i.id]).length;
+  return {done, total: items.length};
+}
+
+function buildTabs(){
+  const tabs = document.getElementById('tabs');
+  tabs.innerHTML = '';
+  const cats = ["Todos", ...DATA.map(g=>g.cat)];
+  cats.forEach(c => {
+    const el = document.createElement('div');
+    el.className = 'tab' + (c===activeCat ? ' active' : '');
+    const count = c==="Todos" ? allItems().length : DATA.find(g=>g.cat===c).items.length;
+    el.innerHTML = c + ' <span class="count">'+count+'</span>';
+    el.onclick = () => { activeCat = c; render(); };
+    tabs.appendChild(el);
+  });
+}
+
+function levelLabel(n){
+  return n==='facil' ? 'Fácil' : n==='intermediario' ? 'Intermediário' : 'Avançado';
+}
+
+function renderMain(){
+  const main = document.getElementById('main');
+  main.innerHTML = '';
+  const groups = activeCat === "Todos" ? DATA : DATA.filter(g => g.cat === activeCat);
+
+  if(groups.every(g=>g.items.length===0)){
+    main.innerHTML = '<div class="empty-note">Nenhum exercício aqui.</div>';
+    return;
+  }
+
+  groups.forEach(g => {
+    const heading = document.createElement('div');
+    heading.className = 'cat-heading';
+    heading.innerHTML = '<h3>'+g.icon+'  '+g.cat+'</h3><div class="bar"></div>';
+    main.appendChild(heading);
+
+    g.items.forEach(it => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.id = 'card-'+it.id;
+
+      const head = document.createElement('div');
+      head.className = 'card-head';
+      const isDone = !!completed[it.id];
+
+      head.innerHTML = `
+        <div class="check ${isDone?'done':''}" data-id="${it.id}">✓</div>
+        <div class="card-title-wrap">
+          <div class="card-title ${isDone?'done-text':''}">${it.nome} — ${it.tecnica}</div>
+          <div class="card-meta">
+            <span class="badge ${it.nivel}">${levelLabel(it.nivel)}</span>
+            ${it.tag ? `<span class="badge tag">${it.tag}</span>` : ''}
+          </div>
+        </div>
+        <div class="chevron">⌄</div>
+      `;
+      head.querySelector('.check').onclick = (e) => {
+        e.stopPropagation();
+        completed[it.id] = !completed[it.id];
+        saveState();
+        render();
+      };
+      head.onclick = () => {
+        card.classList.toggle('open');
+        const body = card.querySelector('.card-body');
+        body.style.maxHeight = card.classList.contains('open') ? body.scrollHeight+'px' : '0px';
+      };
+
+      const body = document.createElement('div');
+      body.className = 'card-body';
+      body.innerHTML = `
+        <div class="card-body-inner">
+          <div class="field">
+            <div class="field-label">Benefícios</div>
+            <div class="field-value"><ul>${it.beneficios.map(b=>'<li>'+b+'</li>').join('')}</ul></div>
+          </div>
+          <div class="field">
+            <div class="field-label">Protocolo & material</div>
+            <div class="proto-row">
+              <div class="proto-item">${it.protocolo}<span>Protocolo</span></div>
+              <div class="proto-item">${it.material}<span>Material</span></div>
+            </div>
+          </div>
+          <div class="field">
+            <div class="field-label">Execução</div>
+            <div class="field-value">${it.acao}</div>
+          </div>
+          ${it.video ? `
+          <a class="video-link" href="https://www.youtube.com/watch?v=${it.video}" target="_blank" rel="noopener">
+            <span class="video-play">▶</span> Assistir vídeo da execução
+          </a>` : ''}
+        </div>
+      `;
+      card.appendChild(head);
+      card.appendChild(body);
+      main.appendChild(card);
+    });
+  });
+}
+
+function render(){
+  buildTabs();
+  renderMain();
+  const {done, total} = totalCounts();
+  document.getElementById('progressPill').innerHTML = done+' <span style="opacity:.5">/</span> '+total;
+}
+
+document.getElementById('resetBtn').onclick = () => {
+  if(confirm('Reiniciar todo o progresso marcado?')){
+    completed = {};
+    saveState();
+    render();
+  }
+};
+
+document.getElementById('randomBtn').onclick = () => {
+  const items = allItems();
+  const pending = items.filter(i => !completed[i.id]);
+  const pool = pending.length ? pending : items;
+  const pick = pool[Math.floor(Math.random()*pool.length)];
+  activeCat = pick.cat;
+  render();
+  setTimeout(() => {
+    const card = document.getElementById('card-'+pick.id);
+    if(card){
+      card.scrollIntoView({behavior:'smooth', block:'center'});
+      card.classList.add('open');
+      const body = card.querySelector('.card-body');
+      body.style.maxHeight = body.scrollHeight+'px';
+    }
+  }, 60);
+};
+
+loadState();
+</script>
+</body>
+</html>
